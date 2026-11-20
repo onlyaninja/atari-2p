@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ATARI TOP 10 — 2-Player Arcade Edition</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="crt-on">
+  <div class="cabinet">
+    <header class="cabinet-header">
+      <div class="brand">
+        <div class="atari-stripes" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div class="brand-text">
+          <h1>ATARI TOP 10</h1>
+          <p class="subtitle">2-PLAYER SIMULTANEOUS ARCADE EDITION</p>
+        </div>
+      </div>
+
+      <nav class="header-actions" aria-label="Arcade controls">
+        <button type="button" id="btn-back" class="arcade-btn arcade-btn--danger" hidden>
+          ◀ MENU <kbd>ESC</kbd>
+        </button>
+        <button type="button" id="btn-crt" class="arcade-btn" aria-pressed="true">
+          CRT: ON
+        </button>
+        <button type="button" id="btn-sound" class="arcade-btn" aria-pressed="true">
+          SFX: ON
+        </button>
+        <button type="button" id="btn-controls" class="arcade-btn arcade-btn--accent">
+          2P CONTROLS
+        </button>
+      </nav>
+    </header>
+
+    <main id="app-main" class="cabinet-body">
+      <!-- MENU VIEW -->
+      <section id="menu-view" class="menu-view" aria-label="Game selection menu">
+        <div class="menu-banner">
+          <div class="banner-copy">
+            <h2>SELECT CARTRIDGE</h2>
+            <p>All 10 legendary Atari classics — every single-player &amp; alternating hit rebuilt for <strong>simultaneous 2-player</strong> action!</p>
+          </div>
+          <div class="player-legend" aria-label="Quick player key summary">
+            <div class="legend-chip legend-chip--p1">
+              <span class="chip-tag">P1</span>
+              <span>WASD + SPACE</span>
+            </div>
+            <div class="legend-chip legend-chip--p2">
+              <span class="chip-tag">P2</span>
+              <span>ARROWS + ENTER</span>
+            </div>
+          </div>
+        </div>
+
+        <ul id="game-grid" class="game-grid" aria-label="Top 10 Atari Games"></ul>
+      </section>
+
+      <!-- GAMEPLAY VIEW -->
+      <section id="game-view" class="game-view" aria-label="Active arcade screen" hidden>
+        <div class="game-hud" aria-live="polite">
+          <div class="hud-player hud-player--p1">
+            <div class="hud-label">
+              <span class="dot dot--p1" aria-hidden="true"></span>
+              <span>PLAYER 1</span>
+            </div>
+            <div class="hud-stats">
+              <span id="hud-p1-score" class="hud-score">00000</span>
+              <span id="hud-p1-lives" class="hud-lives">♥♥♥</span>
+            </div>
+          </div>
+
+          <div class="hud-center">
+            <h2 id="hud-game-title" class="hud-title">GALAGA</h2>
+            <div class="hud-meta">
+              <span id="hud-level" class="hud-pill">WAVE 1</span>
+              <span id="hud-mode" class="hud-pill hud-pill--mode">2P CO-OP</span>
+              <span id="hud-hi" class="hud-pill hud-pill--hi">HI 00000</span>
+            </div>
+          </div>
+
+          <div class="hud-player hud-player--p2">
+            <div class="hud-label">
+              <span id="hud-p2-name">PLAYER 2</span>
+              <span class="dot dot--p2" aria-hidden="true"></span>
+            </div>
+            <div class="hud-stats">
+              <span id="hud-p2-lives" class="hud-lives">♥♥♥</span>
+              <span id="hud-p2-score" class="hud-score">00000</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="screen-bezel">
+          <div class="screen-viewport">
+            <canvas id="game-canvas" width="800" height="600"></canvas>
+            <div class="crt-overlay" aria-hidden="true"></div>
+
+            <div id="game-overlay" class="game-overlay" hidden>
+              <div class="overlay-card">
+                <p id="overlay-badge" class="overlay-badge">2P UPGRADED</p>
+                <h3 id="overlay-title">PAUSED</h3>
+                <p id="overlay-message">Press P to resume</p>
+                <div class="overlay-actions">
+                  <button type="button" id="btn-overlay-primary" class="arcade-btn arcade-btn--accent">RESUME</button>
+                  <button type="button" id="btn-overlay-restart" class="arcade-btn">RESTART</button>
+                  <button type="button" id="btn-overlay-menu" class="arcade-btn arcade-btn--danger">MENU</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="game-footer">
+          <div class="controls-strip">
+            <span class="ctrl-p1"><strong>P1:</strong> <span id="strip-p1">WASD + SPACE</span></span>
+            <span class="ctrl-sep" aria-hidden="true">|</span>
+            <span class="ctrl-p2"><strong>P2:</strong> <span id="strip-p2">ARROWS + ENTER</span></span>
+          </div>
+          <div class="game-quick-actions">
+            <button type="button" id="btn-p2-bot" class="arcade-btn arcade-btn--sm" aria-pressed="false" title="Toggle CPU Copilot for Player 2">
+              P2: HUMAN
+            </button>
+            <button type="button" id="btn-pause" class="arcade-btn arcade-btn--sm">PAUSE <kbd>P</kbd></button>
+            <button type="button" id="btn-restart" class="arcade-btn arcade-btn--sm">RESTART <kbd>R</kbd></button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="cabinet-footer">
+      <span>WOODGRAIN MULTI-CART SYSTEM • 10 GAMES IN 1 • KEYBOARD &amp; DUAL GAMEPAD READY</span>
+    </footer>
+  </div>
+
+  <!-- Native Modal Dialog with Light Dismiss -->
+  <dialog id="controls-dialog" class="arcade-dialog" closedby="any" aria-labelledby="controls-dialog-title">
+    <form method="dialog" class="dialog-inner">
+      <div class="dialog-header">
+        <h2 id="controls-dialog-title">2-PLAYER ARCADE CONTROLS</h2>
+        <button type="submit" class="arcade-btn arcade-btn--sm" value="close" aria-label="Close controls guide">✕</button>
+      </div>
+
+      <div class="dialog-grid">
+        <section class="dialog-panel dialog-panel--p1">
+          <h3>PLAYER 1 (CYAN)</h3>
+          <dl class="key-list">
+            <div><dt>Move / Steer / Aim</dt><dd><kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd></dd></div>
+            <div><dt>Fire / Jump / Action</dt><dd><kbd>SPACE</kbd> or <kbd>F</kbd></dd></div>
+            <div><dt>Secondary (Hyperspace)</dt><dd><kbd>G</kbd> or <kbd>Q</kbd></dd></div>
+            <div><dt>Gamepad</dt><dd>Controller 1 (Stick/D-Pad + A)</dd></div>
+          </dl>
+        </section>
+
+        <section class="dialog-panel dialog-panel--p2">
+          <h3>PLAYER 2 (AMBER)</h3>
+          <dl class="key-list">
+            <div><dt>Move / Steer / Aim</dt><dd><kbd>↑</kbd> <kbd>←</kbd> <kbd>↓</kbd> <kbd>→</kbd></dd></div>
+            <div><dt>Fire / Jump / Action</dt><dd><kbd>ENTER</kbd> or <kbd>/</kbd> or <kbd>R-SHIFT</kbd></dd></div>
+            <div><dt>Secondary (Hyperspace)</dt><dd><kbd>.</kbd> or <kbd>NUM 0</kbd></dd></div>
+            <div><dt>Gamepad</dt><dd>Controller 2 (Stick/D-Pad + A)</dd></div>
+          </dl>
+        </section>
+      </div>
+
+      <p class="dialog-tip">
+        <strong>Solo playtesting?</strong> Click <code>P2: HUMAN</code> in the game bar (or press <kbd>B</kbd>) to enable a smart <strong>CPU Copilot / Opponent</strong> for Player 2 at any time!
+      </p>
+
+      <div class="dialog-footer">
+        <span class="dialog-hint"><kbd>P</kbd> Pause • <kbd>R</kbd> Restart • <kbd>ESC</kbd> Back to Menu</span>
+        <button type="submit" class="arcade-btn arcade-btn--accent" value="ok">GOT IT!</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Core Systems -->
+  <script src="js/audio.js"></script>
+  <script src="js/input.js"></script>
+
+  <!-- Top 10 Atari 2-Player Games -->
+  <script src="js/games/galaga.js"></script>
+  <script src="js/games/asteroids.js"></script>
+  <script src="js/games/centipede.js"></script>
+  <script src="js/games/breakout.js"></script>
+  <script src="js/games/space-invaders.js"></script>
+  <script src="js/games/missile-command.js"></script>
+  <script src="js/games/pacman.js"></script>
+  <script src="js/games/pitfall.js"></script>
+  <script src="js/games/combat.js"></script>
+  <script src="js/games/pong.js"></script>
+
+  <!-- Main Arcade Menu & Engine -->
+  <script src="js/main.js"></script>
+</body>
+</html>
