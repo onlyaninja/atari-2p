@@ -1,5 +1,7 @@
 # ATARI TOP 10 — 2-Player Simultaneous Arcade Edition
 
+🎮 **[PLAY ONLINE NOW → https://onlyaninja.github.io/atari-2p/](https://onlyaninja.github.io/atari-2p/)**
+
 A woodgrain-styled retro Atari multi-cart menu featuring **10 classic Atari-era games** where every originally single-player or alternating-turn hit has been rebuilt for **simultaneous 2-player action**.
 
 ## Top 10 Games
